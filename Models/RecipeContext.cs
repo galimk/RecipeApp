@@ -18,4 +18,10 @@ public class RecipeContext : DbContext
     // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source={DbPath}");
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Recipe>().HasMany(e => e.Ingredients);
+        modelBuilder.Entity<Recipe>().HasMany(e => e.Instructions);
+    }
 }
