@@ -1,10 +1,11 @@
-import {useFetch} from "use-http";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {useHistory} from "react-router-dom";
 
 
 const RecipeItem = ({recipe, onDelete}) => {
-    const {del} = useFetch(`recipes/${recipe.id}`);
+    const history = useHistory();
+
     return (
         <tr key={recipe.id}>
             <td>{recipe.name}</td>
@@ -21,7 +22,7 @@ const RecipeItem = ({recipe, onDelete}) => {
             </td>
             <td>
                 <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    <button type="button" className="btn btn-info">Edit</button>
+                    <button type="button" className="btn btn-info" onClick={() => history.push(`recipe-edit/${recipe.id}`) }>Edit</button>
                     <button type="button" className="btn btn-warning"
                         onClick={async () => {
                             if (window.confirm(`Delete recipe ${recipe.name}`)){
@@ -39,10 +40,10 @@ const RecipeItem = ({recipe, onDelete}) => {
 
 export  const RecipeList = () => {
     const [recipes, setRecipes] = useState([]);
-    
+    const history = useHistory();
     const loadRecipes = () => axios.get("recipes").then(r => setRecipes(r.data));
     useEffect( () => loadRecipes(), [])
-    
+
     return (
         <>
             {recipes.length === 0 && <span>Loading...</span> }
@@ -64,7 +65,20 @@ export  const RecipeList = () => {
                             axios.delete(`recipes/${e.id}`).then(() => loadRecipes())
                         }}/>)}
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td> 
+                                <td colSpan={5}  style={{display:"flex", flexDirection:"row", justifyContent:"flex-end"}}>
+                                    <button type="button"  onClick={() => history.push("recipe-create")}
+                                            className="btn btn-success">Add New Recipe</button>
+                                </td>
+                            </tr>
+                        </tfoot>
                     </table>
+                    
                 </>
             }
         </>    

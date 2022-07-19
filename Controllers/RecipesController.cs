@@ -9,11 +9,6 @@ namespace RecipeApp.Controllers;
 [Route("[controller]")]
 public class RecipesController : ControllerBase
 { 
-    private static readonly string[] Summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
     private RecipeContext Context { get; }
 
     public RecipesController(RecipeContext context)
@@ -27,6 +22,14 @@ public class RecipesController : ControllerBase
         return await Context.Recipes
             .Include(e => e.Ingredients)
             .Include(e => e.Instructions).ToListAsync();
+    }
+    
+    [HttpGet("{id:int}")]
+    public async Task<Recipe> Get([FromRoute]int id)
+    {
+        return await Context.Recipes
+            .Include(e => e.Ingredients)
+            .Include(e => e.Instructions).FirstAsync(e => e.Id == id);
     }
 
     [HttpPost]
